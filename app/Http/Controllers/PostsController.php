@@ -63,7 +63,7 @@ class PostsController extends Controller
             'user_id'=>auth()->user()->id
         ]);
 
-        return redirect('/blog')->with('message','Your post has been updated');
+        return redirect('/blog')->with('message','Your post has been added');
     }
 
     /**
@@ -72,9 +72,9 @@ class PostsController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function show($id)
+    public function show($slug)
     {
-        //
+        return view('blog.show')->with('post',Posts::where('slug',$slug)->first());
     }
 
     /**

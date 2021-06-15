@@ -9,7 +9,7 @@
         </div>
     </div>
 
-    @if(session()->has('Message'))
+    @if(session()->has('message'))
         <div class="w-4/5 m-auto mt-10 pl-2">
             <p class="w-1/6 mb-4 text-gray-50 bg-green-500 rounded-2xl py-4">
                 {{ session()->get('message') }}
@@ -45,7 +45,7 @@
                     {{ $post->decription }}
                 </p>
 
-                <a href="/blog/{{$post->slug}}" class="uppercase bg-blue-500 text-gray-100 text-lg font-extrabold ">
+                <a href="/blog/{{$post->slug}}" class="uppercase bg-blue-500 text-gray-100 text-lg font-extrabold py-4 px-8 rounded-3xl">
                     Keep Reading
                 </a>
             </div>
