@@ -114,8 +114,8 @@ class PostsController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function destroy($id)
+    public function destroy($slug)
     {
-        $post =Posts:where('slug',$slug)->with('message','your post has been deleted!');
+        $post =Posts::where('slug',$slug)->with('message','your post has been deleted!');
     }
 }
