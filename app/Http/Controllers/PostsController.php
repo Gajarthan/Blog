@@ -83,9 +83,9 @@ class PostsController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function edit($id)
+    public function edit($slug)
     {
-        //
+        return view('blog.edit')->with('post',Posts::where('slug',$slug)->first());
     }
 
     /**
@@ -95,9 +95,17 @@ class PostsController extends Controller
      * @param  int  $id
      * @return void
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $slug)
     {
-        //
+        Posts::where('slug',$slug)->update([
+            'title'=>$request->input('title'),
+            'decription'=>$request->input('decription'),
+            'slug'=>SlugService::createSlug(Posts::class,'slug',$request->title),
+            //'image_path'=>$newImageName,
+            'user_id'=>auth()->user()->id
+        ]);
+
+        return redirect('/blog')->with('message','Your post has been Updated');
     }
 
     /**
@@ -108,6 +116,6 @@ class PostsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $post =Posts:where('slug',$slug)->with('message','your post has been deleted!');
     }
 }
