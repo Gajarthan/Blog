@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @method static orderBy(string $string, string $string1)
  */
-class categories extends Model
+class Categories extends Model
 {
     use HasFactory,Sluggable;
 
