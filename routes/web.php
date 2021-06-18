@@ -21,8 +21,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/',[PagesController::class,'index']);
 Route::resource('/blog',PostsController::class);
-Route::resource('/admin/categories',CategoriesController::class);
+Route::resource('/admin/categories',CategoriesController::class)->middleware('auth');
 
 Auth::routes();
 
-Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/home', [HomeController::class, 'index'])->name('home')->middleware('auth');

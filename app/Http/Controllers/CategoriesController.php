@@ -21,13 +21,13 @@ class CategoriesController extends Controller
      */
     public function index()
     {
-        return view('admin.category.index')->with('categories', Categories::orderBy('updated_at','DESC')->get());
+        return view('admin.category.index')->with('categories', Categories::orderBy('updated_at','DESC')->simplePaginate(5));
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return Application|Factory|View
+     * @return void
      */
     public function create()
     {
@@ -45,7 +45,6 @@ class CategoriesController extends Controller
         $slug = SlugService::createSlug(Categories::class,'slug',$request->title);
         $newImageName="C-".uniqid().'-'.$slug.'.'.$request->image->extension();
         $request->image->move(storage_path('app/public/image'),$newImageName);
-        dd(auth()->user()->id);
 
         Categories::create([
             'name'=>$request->input('title'),
@@ -61,8 +60,8 @@ class CategoriesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Categories  $categories
-     * @return Response
+     * @param Categories $categories
+     * @return void
      */
     public function show(Categories $categories)
     {
@@ -72,8 +71,8 @@ class CategoriesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Categories  $categories
-     * @return Response
+     * @param Categories $categories
+     * @return void
      */
     public function edit(Categories $categories)
     {
@@ -84,8 +83,8 @@ class CategoriesController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param  \App\Models\Categories  $categories
-     * @return Response
+     * @param Categories $categories
+     * @return void
      */
     public function update(Request $request, Categories $categories)
     {
@@ -95,8 +94,8 @@ class CategoriesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Categories  $categories
-     * @return Response
+     * @param Categories $categories
+     * @return void
      */
     public function destroy(Categories $categories)
     {
