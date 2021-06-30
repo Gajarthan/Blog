@@ -22,7 +22,7 @@ class PostsController extends Controller
     public function index()
     {
 
-        return view('blog.index')->with('posts', Posts::orderBy('updated_at','DESC')->get());
+        return view('admin.posts.index')->with('posts', Posts::orderBy('updated_at','DESC')->get());
 
     }
 

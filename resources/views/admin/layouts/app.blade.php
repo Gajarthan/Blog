@@ -47,10 +47,15 @@
             <i class="fas fa-tachometer-alt mr-3"></i>
             Dashboard
         </a>
+        <a href="/admin/posts" class="flex items-center text-white py-4 pl-6 nav-item {{ (request()->is('admin/posts')) ? 'active-nav-link' : '' }}">
+            <i class="fas fa-sticky-note mr-3"></i>
+            posts
+        </a>
         <a href="/admin/categories" class="flex items-center text-white py-4 pl-6 nav-item {{ (request()->is('admin/categories')) ? 'active-nav-link' : '' }}">
             <i class="fas fa-sticky-note mr-3"></i>
             Categories
         </a>
+
     </nav>
     <a href="#" class="absolute w-full upgrade-btn bottom-0 active-nav-link text-white flex items-center justify-center py-4">
         <i class="fas fa-arrow-circle-up mr-3"></i>
@@ -143,7 +148,7 @@
     <div class="w-full h-screen overflow-x-hidden border-t flex flex-col">
         @yield('content')
         <footer class="w-full bg-white text-right p-4">
-            Built by <a target="_blank" href="https://davidgrzyb.com" class="underline">David Grzyb</a>.
+            Built by <a target="_blank" href="https://ibohar.com" class="underline">Bohar</a>.
         </footer>
     </div>
 

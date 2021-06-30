@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/',[PagesController::class,'index']);
-Route::resource('/blog',PostsController::class);
+Route::resource('/admin/posts',PostsController::class);
 Route::resource('/admin/categories',CategoriesController::class)->middleware('auth');
 
 Auth::routes();
