@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Categories;
+use App\Models\Posts;
 use Cviebrock\EloquentSluggable\Services\SlugService;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
 
 class CategoriesController extends Controller
@@ -21,7 +21,12 @@ class CategoriesController extends Controller
      */
     public function index()
     {
-        return view('admin.category.index')->with('categories', Categories::orderBy('updated_at','DESC')->simplePaginate(5));
+        $categories = Categories::orderBy('updated_at','DESC')->Paginate(5);
+        $dropdown = Categories::pluck('name', 'id');
+
+        $selectedID = 2;
+        return view('admin.category.index')->with('data', ['ca'=>$categories, 'ec'=>null,'cd'=>$dropdown]);
+
     }
 
     /**
@@ -65,40 +70,53 @@ class CategoriesController extends Controller
      */
     public function show(Categories $categories)
     {
-        //
+
     }
 
     /**
      * Show the form for editing the specified resource.
      *
      * @param Categories $categories
-     * @return void
+     * @return Application|Factory|View
      */
-    public function edit(Categories $categories)
+    public function edit($id)
     {
-        //
+        $edit_category = Categories::find($id);
+        $categories = Categories::orderBy('updated_at','DESC')->Paginate(5);
+        $categories_drop = Categories::orderBy('name','DESC');
+        return view('admin.category.index')->with('data', ['ec' => $edit_category, 'ca' => $categories, 'cd'=>$categories_drop]);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param Categories $categories
-     * @return void
+     * @param $id
+     * @return Application|Redirector|RedirectResponse
      */
-    public function update(Request $request, Categories $categories)
+    public function update(Request $request, $id)
     {
-        //
+        Categories::where('id',$id)->update([
+            'name'=>$request->input('title'),
+            'description'=>$request->input('description'),
+            'slug'=>SlugService::createSlug(Posts::class,'slug',$request->slug),
+           // 'image_path'=>$newImageName,
+        //    'user_id'=>auth()->user()->id
+        ]);
+
+        return redirect('/admin/categories')->with('message','Your post has been Updated');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param Categories $categories
-     * @return void
+     * @param $id
+     * @return RedirectResponse
      */
-    public function destroy(Categories $categories)
+    public function destroy($id)
     {
-        //
+        $categories=Categories::find($id);
+        $categories->delete();
+        return redirect('/admin/categories')->with('success', 'Product deleted successfully');
     }
 }

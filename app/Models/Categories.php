@@ -15,7 +15,9 @@ class Categories extends Model
 {
     use HasFactory,Sluggable;
 
-    protected $fillable = ['name',
+    protected $fillable = [
+        'id',
+        'name',
         'slug',
         'description',
         'imagePath',
@@ -33,6 +35,5 @@ class Categories extends Model
                 'source'=>'name'
             ]
         ];
-
     }
 }

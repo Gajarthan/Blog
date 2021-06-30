@@ -11,9 +11,13 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
+    <script  language="JavaScript" type="text/javascript" src="{{ asset('js/jquery-3.6.0.min.js') }}" defer></script>
+    <script  language="JavaScript" type="text/javascript" src="{{ asset('js/select2.min.js') }}" defer></script>
 
     <!-- Styles -->
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/select2.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/font-awesome.min.css') }}" rel="stylesheet">
     <style>
         .bg-sidebar { background: #3d68ff; }
         .cta-btn { color: #3d68ff; }
@@ -22,6 +26,12 @@
         .active-nav-link { background: #1947ee; }
         .nav-item:hover { background: #1947ee; }
         .account-link:hover { background: #3d68ff; }
+        .isDisabled {
+            color: currentColor;
+            cursor: not-allowed;
+            opacity: 0.5;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body class="bg-gray-100 font-family-karla flex">
@@ -54,7 +64,7 @@
         <div class="w-1/2"></div>
         <div x-data="{ isOpen: false }" class="relative w-1/2 flex justify-end">
             <button @click="isOpen = !isOpen" class="realtive z-10 w-12 h-12 rounded-full overflow-hidden border-4 border-gray-400 hover:border-gray-300 focus:border-gray-300 focus:outline-none">
-                <img src="https://source.unsplash.com/uJ8LNVCBjFQ/400x400">
+                <img src="https://www.fillmurray.com/200/200">
             </button>
             <button x-show="isOpen" @click="isOpen = false" class="h-full w-full fixed inset-0 cursor-default"></button>
             <div x-show="isOpen" class="absolute w-32 bg-white rounded-lg shadow-lg py-2 mt-16">
