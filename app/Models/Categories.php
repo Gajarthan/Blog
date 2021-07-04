@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 
 /**
@@ -23,11 +24,6 @@ class Categories extends Model
         'imagePath',
         'userId'];
 
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
     public function sluggable() : array
     {
         return [
@@ -35,5 +31,9 @@ class Categories extends Model
                 'source'=>'name'
             ]
         ];
+    }
+    public function post(): HasMany
+    {
+        return $this->hasMany(Posts::class);
     }
 }

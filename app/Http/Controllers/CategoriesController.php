@@ -24,7 +24,6 @@ class CategoriesController extends Controller
         $categories = Categories::orderBy('updated_at','DESC')->Paginate(5);
         $dropdown = Categories::pluck('name', 'id');
 
-        $selectedID = 2;
         return view('admin.category.index')->with('data', ['ca'=>$categories, 'ec'=>null,'cd'=>$dropdown]);
 
     }

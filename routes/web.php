@@ -20,9 +20,10 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/',[PagesController::class,'index']);
-Route::resource('/admin/posts',PostsController::class);
+Route::resource('/admin/posts',PostsController::class)->middleware('auth');
 Route::resource('/admin/categories',CategoriesController::class)->middleware('auth');
 
 Auth::routes();
 
 Route::get('/home', [HomeController::class, 'index'])->name('home')->middleware('auth');
+Route::post('/upload', [PostsController::class, 'fileupload'])->name('home')->middleware('auth');
