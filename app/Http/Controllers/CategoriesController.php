@@ -23,9 +23,7 @@ class CategoriesController extends Controller
     {
         $categories = Categories::orderBy('updated_at','DESC')->Paginate(5);
         $dropdown = Categories::pluck('name', 'id');
-
         return view('admin.category.index')->with('data', ['ca'=>$categories, 'ec'=>null,'cd'=>$dropdown]);
-
     }
 
     /**
@@ -49,7 +47,6 @@ class CategoriesController extends Controller
         $slug = SlugService::createSlug(Categories::class,'slug',$request->title);
         $newImageName="C-".uniqid().'-'.$slug.'.'.$request->image->extension();
         $request->image->move(storage_path('app/public/image'),$newImageName);
-
         Categories::create([
             'name'=>$request->input('title'),
             'description'=>$request->input('description'),
@@ -57,7 +54,6 @@ class CategoriesController extends Controller
             'imagePath'=>$newImageName,
             'userId'=>auth()->user()->getAuthIdentifier()
         ]);
-
         return redirect('/admin/categories')->with('message','Your post has been added');
     }
 
@@ -75,7 +71,7 @@ class CategoriesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param Categories $categories
+     * @param $id
      * @return Application|Factory|View
      */
     public function edit($id)

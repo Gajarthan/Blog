@@ -28,6 +28,13 @@ class DatabaseSeeder extends Seeder
             'imagePath' => '',
             'userId' => 1,
         ]);
+        DB::table('categories')->insert([
+            'name' => 'Category 2',
+            'slug' => 'category-2',
+            'description' => 'This is a category description',
+            'imagePath' => '',
+            'userId' => 1,
+        ]);
         DB::table('posts')->insert([
             'title' => 'Post 1',
             'slug' => 'post-1',
@@ -44,7 +51,7 @@ class DatabaseSeeder extends Seeder
             'imagePath' => '',
             'published' => 0,
             'userId' => 1,
-            'categoryId' => 1,
+            'categoryId' => 2,
         ]);
     }
 }

@@ -1,13 +1,15 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <script src='https://cdn.tiny.cloud/1/u2h57anuxru2l6rghcnqrrp2zr40fnlyc58zjs4eqogxb5jt/tinymce/5/tinymce.min.js' referrerpolicy="origin">
-    </script>
-    <script>
+@extends('admin.layouts.app')
 
-        var useDarkMode = window.matchMedia('(prefers-color-scheme: )').matches;
+@section('sidebar', 'no')
 
-        tinymce.init({
+
+@section('content')
+
+<script src='https://cdn.tiny.cloud/1/u2h57anuxru2l6rghcnqrrp2zr40fnlyc58zjs4eqogxb5jt/tinymce/5/tinymce.min.js' referrerpolicy="origin"></script>
+<script>
+    const useDarkMode = window.matchMedia('(prefers-color-scheme: )').matches;
+
+    tinymce.init({
             selector: 'textarea#full-featured-non-premium',
             plugins: 'print preview paste importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons',
             imagetools_cors_hosts: ['picsum.photos'],
@@ -50,7 +52,7 @@
                 }
             },
             templates: [
-                { title: 'New Table', description: 'creates a new table', content: '<div class="mceTmpl"><table width="98%%"  border="0" cellspacing="0" cellpadding="0"><tr><th scope="col"> </th><th scope="col"> </th></tr><tr><td> </td><td> </td></tr></table></div>' },
+                { title: 'New Table', description: 'creates a new table', content: '<div class="mceTmpl"><table width="80%%"  border="0" cellspacing="0" cellpadding="0"><tr><th scope="col"> </th><th scope="col"> </th></tr><tr><td> </td><td> </td></tr></table></div>' },
                 { title: 'Starting my story', description: 'A cure for writers block', content: 'Once upon a time...' },
                 { title: 'New list with dates', description: 'New List with dates', content: '<div class="mceTmpl"><span class="cdate">cdate</span><br /><span class="mdate">mdate</span><h2>My List</h2><ul><li></li><li></li></ul></div>' }
             ],
@@ -68,76 +70,114 @@
             images_upload_url: 'postAcceptor.php',
             automatic_uploads: false
         });
-
-
-
     </script>
-    <style>
+<style>
+    .-z-1 {
+        z-index: -1;
+    }
 
-        /* For other boilerplate styles, see: /docs/general-configuration-guide/boilerplate-content-css/ */
-        /*
-        * For rendering images inserted using the image plugin.
-        * Includes image captions using the HTML5 figure element.
-        */
+    .origin-0 {
+        transform-origin: 0%;
+    }
 
-        figure.image {
-            display: inline-block;
-            border: 1px solid gray;
-            margin: 0 2px 0 1px;
-            background: #f5f2f0;
-        }
+    input:focus ~ label,
+    input:not(:placeholder-shown) ~ label,
+    textarea:focus ~ label,
+    textarea:not(:placeholder-shown) ~ label,
+    select:focus ~ label,
+    select:not([value='']):valid ~ label {
+        /* @apply transform; scale-75; -translate-y-6; */
+        --tw-translate-x: 0;
+        --tw-rotate: 0;
+        --tw-skew-x: 0;
+        --tw-skew-y: 0;
+        transform: translateX(var(--tw-translate-x)) translateY(var(--tw-translate-y)) rotate(var(--tw-rotate))
+        skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+        --tw-scale-x: 0.75;
+        --tw-scale-y: 0.75;
+        --tw-translate-y: -1.5rem;
+    }
 
-        figure.align-left {
-            float: left;
-        }
-
-        figure.align-right {
-            float: right;
-        }
-
-        figure.image img {
-            margin: 8px 8px 0 8px;
-        }
-
-        figure.image figcaption {
-            margin: 6px 8px 6px 8px;
-            text-align: center;
-        }
-
-
-        /*
-         Alignment using classes rather than inline styles
-         check out the "formats" option
-        */
-
-        img.align-left {
-            float: left;
-        }
-
-        img.align-right {
-            float: right;
-        }
-
-        /* Basic styles for Table of Contents plugin (toc) */
-        .mce-toc {
-            border: 1px solid gray;
-        }
-
-        .mce-toc h2 {
-            margin: 4px;
-        }
-
-        .mce-toc li {
-            list-style-type: none;
-        }
-
-    </style>
-</head>
-
-<body>
-<h1>TinyMCE Quick Start Guide</h1>
-<form method="post">
-    <textarea id="full-featured-non-premium" >Hello, World!</textarea>
+    input:focus ~ label,
+    select:focus ~ label {
+        /* @apply text-black; left-0; */
+        --tw-text-opacity: 1;
+        color: rgba(0, 0, 0, var(--tw-text-opacity));
+        left: 0px;
+    }
+    .tox.tox-silver-sink.tox-tinymce-aux
+    {
+        width: 0;
+    }
+</style>
+<form method="post" action="/admin/posts" enctype="multipart/form-data">
+    @csrf()
+    <div class="grid grid-cols-5 pt-5 px-2">
+        <div class="col-span-4	">
+            <div class="relative z-0 w-full mb-5">
+                <input
+                    type="text"
+                    name="title"
+                    id="title"
+                    placeholder=" "
+                    required
+                    @if($post['ep']!=null)
+                        value="{!! $post['ep']->title !!}"
+                    @endif
+                    class="pt-3 pb-2 block w-full px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 focus:border-black border-gray-200"
+                />
+                <label for="name" class="absolute duration-300 top-3 -z-1 origin-0 text-gray-500">Enter name</label>
+                <span class="text-sm text-red-600 hidden" id="error">Name is required</span>
+            </div>
+            <label for="full-featured-non-premium"></label>
+            <textarea
+                id="full-featured-non-premium"
+                name="description">
+                @if($post['ep']!=null)
+                    {!! $post['ep']->description !!}
+                @endif
+                </textarea>
+        </div>
+        <div class="">
+            <input type="submit" value="publish" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full">
+            <label>
+                <select name="categoryId" class="text-black mt-2 py-2 px-4 rounded w-full">
+                    <option >select an option</option>
+                    @foreach($post['cd'] as $cat)
+                        <option value="{{$cat->id}}">{{ $cat->name }}</option>
+                    @endforeach
+                </select>
+            </label>
+            <input
+                type="text"
+                name="permalink"
+                id="permalink"
+                placeholder=" "
+                required
+                @if($post['ep']!=null)
+                value="{!! $post['ep']->slug!!}"
+                @endif
+                class="pt-3 pb-2 block w-full px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 focus:border-black border-gray-200"
+            />
+            <label for="name" class="absolute duration-300 top-3 -z-1 origin-0 text-gray-500">Permalink</label>
+            <span class="text-sm text-red-600 hidden" id="error">permalink is required</span>
+        </div>
+    </div>
 </form>
-</body>
-</html>
+
+{{--@if($post['ep']==null)--}}
+
+<script>
+    $('#title').change(function (e){
+        var str = $( this ).val();
+        $.get( '{{URL::to('/') }}/checkslug/'+str, function( data ) {
+            $('#permalink').val(data)
+        });
+
+    })
+
+</script>
+{{--@endif--}}
+
+@endsection
+

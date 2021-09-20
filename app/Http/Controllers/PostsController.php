@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Categories;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -33,71 +34,82 @@ class PostsController extends Controller
      */
     public function create()
     {
-        return view('admin.posts.CreateAndUpdate');
+        $activity = Posts::create([
+            'title'=>'untitled',
+            'description'=>null,
+            'slug'=>null,
+            //'image_path'=>$newImageName,
+            'categoryId'=>null,
+            'userId'=>auth()->user()->id
+        ]);
+
+        $dropdown = Categories::all();
+        //        dd($//dropdown);
+        return view('admin.posts.CreateAndUpdate')->with('post',['ep'=>$activity,'cd'=>$dropdown,'id'=>$activity->id]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param Request $request
-     * @return Application|RedirectResponse|Redirector
+     * @return Application|Redirector|RedirectResponse
      */
     public function store(Request $request)
     {
+       // dd($request->contant);
         $request->validate([
             'title'=>'required',
-            'decription'=>'required',
-            'image'=>'required|mimes:jpg,png,jpeg|max:5048'
+            'description'=>'required',
+            'categoryId'=>'required'
         ]);
-
-        $newImageName=uniqid().'-'.$request->title.'.'.$request->image->extension();
-
-        $request->image->move(storage_path('app/public/image'),$newImageName);
-
 
         Posts::create([
             'title'=>$request->input('title'),
-            'decription'=>$request->input('decription'),
+            'description'=>$request->input('description'),
             'slug'=>SlugService::createSlug(Posts::class,'slug',$request->title),
-            'image_path'=>$newImageName,
-            'user_id'=>auth()->user()->id
+            //'image_path'=>$newImageName,
+            'categoryId'=>$request->categoryId,
+            'userId'=>auth()->user()->id
         ]);
 
-        return redirect('/blog')->with('message','Your post has been added');
+        return redirect('/admin/posts')->with('message','Your post has been added');
     }
 
     /**
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return Response
+     * @return Application|Factory|View
      */
-    public function show($slug)
+    public function show($id)
     {
-        return view('blog.show')->with('post',Posts::where('slug',$slug)->first());
+
+        return view('blog.show')->with('post',Posts::where('id',$id)->first());
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
-     * @return Response
+     * @param $id
+     * @return Application|Factory|View
      */
-    public function edit($slug)
+    public function edit($id)
     {
-        return view('blog.edit')->with('post',Posts::where('slug',$slug)->first());
+        $dropdown = Categories::all();
+        $editdata = Posts::where('slug',$id)->first();
+        return view('admin.posts.CreateAndUpdate')->with('post',['ep'=>$editdata,'cd'=>$dropdown,'id'=>'']);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param  int  $id
-     * @return void
+     * @param $id
+     * @return Application|Redirector|RedirectResponse
      */
-    public function update(Request $request, $slug)
+    public function update(Request $request, $id)
     {
-        Posts::where('slug',$slug)->update([
+        Posts::where('id',$id)->update([
             'title'=>$request->input('title'),
             'decription'=>$request->input('decription'),
             'slug'=>SlugService::createSlug(Posts::class,'slug',$request->title),
@@ -111,79 +123,22 @@ class PostsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return Application|Redirector|RedirectResponse
      */
-    public function destroy($slug)
+    public function destroy(int $id)
     {
-        $post = Posts::where('slug',$slug);
+        $post = Posts::where('slug',$id);
         $post->delete();
 
         return redirect('/blog')->with('message','your post has been deleted!');
     }
 
-    public function fileupload(){
-        $accepted_origins = array("http://127.0.0.1:8000/");
-
-        /*********************************************
-         * Change this line to set the upload folder *
-         *********************************************/
-        $imageFolder = "images/";
-
-        if (isset($_SERVER['HTTP_ORIGIN'])) {
-            // same-origin requests won't set an origin. If the origin is set, it must be valid.
-            if (in_array($_SERVER['HTTP_ORIGIN'], $accepted_origins)) {
-                header('Access-Control-Allow-Origin: ' . $_SERVER['HTTP_ORIGIN']);
-            } else {
-                header("HTTP/1.1 403 Origin Denied");
-                return;
-            }
-        }
-
-        // Don't attempt to process the upload on an OPTIONS request
-        if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-            header("Access-Control-Allow-Methods: POST, OPTIONS");
-            return;
-        }
-
-        reset ($_FILES);
-        $temp = current($_FILES);
-        dd($temp);
-        if (is_uploaded_file($temp['tmp_name'])){
-            /*
-              If your script needs to receive cookies, set images_upload_credentials : true in
-              the configuration and enable the following two headers.
-            */
-            // header('Access-Control-Allow-Credentials: true');
-            // header('P3P: CP="There is no P3P policy."');
-
-            // Sanitize input
-            if (preg_match("/([^\w\s\d\-_~,;:\[\]\(\).])|([\.]{2,})/", $temp['name'])) {
-                header("HTTP/1.1 400 Invalid file name.");
-                return;
-            }
-
-            // Verify extension
-            if (!in_array(strtolower(pathinfo($temp['name'], PATHINFO_EXTENSION)), array("gif", "jpg", "png"))) {
-                header("HTTP/1.1 400 Invalid extension.");
-                return;
-            }
-
-            // Accept upload if there was no origin, or if it is an accepted origin
-            $filetowrite = $imageFolder . $temp['name'];
-            move_uploaded_file($temp['tmp_name'], $filetowrite);
-
-            // Determine the base URL
-            $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? "https://" : "http://";
-            $baseurl = $protocol . $_SERVER["HTTP_HOST"] . rtrim(dirname($_SERVER['REQUEST_URI']), "/") . "/";
-
-            // Respond to the successful upload with JSON.
-            // Use a location key to specify the path to the saved image resource.
-            // { location : '/your/uploaded/image/file'}
-            echo json_encode(array('location' => $baseurl . $filetowrite));
-        } else {
-            // Notify editor that the upload failed
-            header("HTTP/1.1 500 Server Error");
-        }
+    public function home(){
+        $posts = Posts::orderBy('updated_at','DESC')->first();
+        return view('index')->with('posts', $posts);
     }
+
+
+
 }

@@ -15,6 +15,7 @@ class Posts extends Model
     use HasFactory,Sluggable;
 
     protected $fillable = [
+        'id',
         'title',
         'slug',
         'description',

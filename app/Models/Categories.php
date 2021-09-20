@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @method static orderBy(string $string, string $string1)
+ * @method static pluck(string $string, string $string1)
  */
 class Categories extends Model
 {

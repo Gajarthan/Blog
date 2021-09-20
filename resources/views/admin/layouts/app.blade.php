@@ -11,11 +11,14 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
-    <script  language="JavaScript" type="text/javascript" src="{{ asset('js/jquery-3.6.0.min.js') }}" defer></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <script  language="JavaScript" type="text/javascript" src="{{ asset('js/select2.min.js') }}" defer></script>
 
     <!-- Styles -->
-    <link href="{{ mix('css/app.css') }}" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/select2.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/font-awesome.min.css') }}" rel="stylesheet">
     <style>
@@ -35,38 +38,43 @@
     </style>
 </head>
 <body class="bg-gray-100 font-family-karla flex">
-<aside class="relative bg-sidebar h-screen w-64 hidden sm:block shadow-xl">
-    <div class="p-6">
-        <a href="index.html" class="text-white text-3xl font-semibold uppercase hover:text-gray-300">Admin</a>
-        <button class="w-full bg-white cta-btn font-semibold py-2 mt-5 rounded-br-lg rounded-bl-lg rounded-tr-lg shadow-lg hover:shadow-xl hover:bg-gray-300 flex items-center justify-center">
-            <i class="fas fa-plus mr-3"></i> New Report
-        </button>
-    </div>
-    <nav class="text-white text-base font-semibold pt-3">
-        <a href="/home" class="flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item {{ (request()->is('home')) ? 'active-nav-link' : '' }}">
-            <i class="fas fa-tachometer-alt mr-3"></i>
-            Dashboard
-        </a>
-        <a href="/admin/posts" class="flex items-center text-white py-4 pl-6 nav-item {{ (request()->is('admin/posts')) ? 'active-nav-link' : '' }}">
-            <i class="fas fa-sticky-note mr-3"></i>
-            posts
-        </a>
-        <a href="/admin/categories" class="flex items-center text-white py-4 pl-6 nav-item {{ (request()->is('admin/categories')) ? 'active-nav-link' : '' }}">
-            <i class="fas fa-sticky-note mr-3"></i>
-            Categories
-        </a>
+@if (trim($__env->yieldContent('sidebar'))=='yes')
+    <aside class="relative bg-sidebar h-screen w-64 hidden sm:block shadow-xl">
+        <div class="p-6">
+            <a href="index.html" class="text-white text-3xl font-semibold uppercase hover:text-gray-300">Admin</a>
+            <a href="/admin/posts/create" class="w-full bg-white cta-btn font-semibold py-2 mt-5 rounded-br-lg rounded-bl-lg rounded-tr-lg shadow-lg hover:shadow-xl hover:bg-gray-300 flex items-center justify-center">
+                <i class="fas fa-plus mr-3"></i> New Post
+            </a>
+        </div>
+        <nav class="text-white text-base font-semibold pt-3">
+            <a href="/home" class="flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item {{ (request()->is('home')) ? 'active-nav-link' : '' }}">
+                <i class="fas fa-tachometer-alt mr-3"></i>
+                Dashboard
+            </a>
+            <a href="/admin/posts" class="flex items-center text-white py-4 pl-6 nav-item {{ (request()->is('admin/posts')) ? 'active-nav-link' : '' }}">
+                <i class="fas fa-sticky-note mr-3"></i>
+                posts
+            </a>
+            <a href="/admin/categories" class="flex items-center text-white py-4 pl-6 nav-item {{ (request()->is('admin/categories')) ? 'active-nav-link' : '' }}">
+                <i class="fas fa-sticky-note mr-3"></i>
+                Categories
+            </a>
 
-    </nav>
-    <a href="#" class="absolute w-full upgrade-btn bottom-0 active-nav-link text-white flex items-center justify-center py-4">
-        <i class="fas fa-arrow-circle-up mr-3"></i>
-        Settings
-    </a>
-</aside>
-
+        </nav>
+        <a href="#" class="absolute w-full upgrade-btn bottom-0 active-nav-link text-white flex items-center justify-center py-4">
+            <i class="fas fa-arrow-circle-up mr-3"></i>
+            Settings
+        </a>
+    </aside>
+@endif
 <div class="relative w-full flex flex-col h-screen overflow-y-hidden">
     <!-- Desktop Header -->
     <header class="w-full items-center bg-white py-2 px-6 hidden sm:flex">
-        <div class="w-1/2"></div>
+        <div class="w-1/2">
+            @if (trim($__env->yieldContent('sidebar'))=='no')
+                <a href="{{ URL::previous() }}"><-</a>
+            @endif
+        </div>
         <div x-data="{ isOpen: false }" class="relative w-1/2 flex justify-end">
             <button @click="isOpen = !isOpen" class="realtive z-10 w-12 h-12 rounded-full overflow-hidden border-4 border-gray-400 hover:border-gray-300 focus:border-gray-300 focus:outline-none">
                 <img src="https://www.fillmurray.com/200/200">
@@ -158,5 +166,6 @@
 <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
 <!-- Font Awesome -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" integrity="sha256-KzZiKy0DWYsnwMF+X1DvQngQ2/FxF7MF3Ff72XcpuPs=" crossorigin="anonymous"></script>
+
 </body>
 </html>
