@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Page Title')
+
 @section('content')
     <div class="w-4/5 m-auto text-center">
         <div class="py-15 border-b border-gray-200">
@@ -9,7 +11,7 @@
         </div>
     </div>
 
-    @if(session()->has('Message'))
+    @if(session()->has('message'))
         <div class="w-4/5 m-auto mt-10 pl-2">
             <p class="w-1/6 mb-4 text-gray-50 bg-green-500 rounded-2xl py-4">
                 {{ session()->get('message') }}
@@ -30,7 +32,7 @@
     @foreach($posts as $post)
         <div class="sm:grid grid-cols-2 gap-20 w-4/5 mx-auto py-15 border-b border-gray-200">
             <div>
-                <img src="{{asset('storage/image/post.jpg')}}"  alt="">
+                <img src="{{asset('storage/image')}}/{{ $post->image_path }}"  alt="">
             </div>
             <div>
                 <h2 class="text-gray-700 font-bold text-5xl pb-4">
@@ -45,9 +47,28 @@
                     {{ $post->decription }}
                 </p>
 
-                <a href="/blog/{{$post->slug}}" class="uppercase bg-blue-500 text-gray-100 text-lg font-extrabold ">
+                <a href="/blog/{{$post->slug}}" class="uppercase bg-blue-500 text-gray-100 text-lg font-extrabold py-4 px-8 rounded-3xl">
                     Keep Reading
                 </a>
+                @if(isset(Auth::user()->id) && Auth::user()->id == $post->user_id )
+                    <span class="float-right">
+                        <a 
+                            href="/blog/{{ $post->slug }}/edit"
+                            class="text-gray-700 italic hover:text-gray-900 pb-1 border-b-2">
+                            Edit
+                        </a>
+                    </span>
+                    <span  class="float-right">
+                        <form action="/blog/{{ $post->slug }}"
+                            method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="text-red-500 pr-3">
+                            DELETE
+                            </button>
+                        </form>
+                    </span>
+                @endif
             </div>
         </div>
     @endforeach

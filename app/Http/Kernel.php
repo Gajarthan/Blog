@@ -6,6 +6,8 @@ use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
 {
+    use \Devio\Permalink\Routing\ReplacesRouter;
+
     /**
      * The application's global HTTP middleware stack.
      *

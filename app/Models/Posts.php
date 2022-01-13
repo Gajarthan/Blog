@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @method static orderBy(string $string, string $string1)
@@ -13,16 +14,15 @@ class Posts extends Model
 {
     use HasFactory,Sluggable;
 
-    protected $fillable = ['title',
+    protected $fillable = [
+        'id',
+        'title',
         'slug',
-        'decription',
-        'image_path',
-        'user_id'];
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
+        'description',
+        'imagePath',
+        'userId',
+        'categoryId',
+    ];
 
     public function sluggable() : array
     {
@@ -32,5 +32,9 @@ class Posts extends Model
             ]
         ];
 
+    }
+    public function categories(): BelongsTo
+    {
+        return $this->belongsTo(Categories::class,'categoryId');
     }
 }

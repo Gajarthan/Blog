@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Categories;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -21,8 +22,8 @@ class PostsController extends Controller
      */
     public function index()
     {
-
-        return view('blog.index')->with('posts', Posts::orderBy('updated_at','DESC')->get());
+        $posts = Posts::orderBy('updated_at','DESC')->get();
+        return view('admin.posts.index')->with('posts', $posts);
 
     }
 
@@ -33,81 +34,111 @@ class PostsController extends Controller
      */
     public function create()
     {
-        return view('blog.create');
+        $activity = Posts::create([
+            'title'=>'untitled',
+            'description'=>null,
+            'slug'=>null,
+            //'image_path'=>$newImageName,
+            'categoryId'=>null,
+            'userId'=>auth()->user()->id
+        ]);
+
+        $dropdown = Categories::all();
+        //        dd($//dropdown);
+        return view('admin.posts.CreateAndUpdate')->with('post',['ep'=>$activity,'cd'=>$dropdown,'id'=>$activity->id]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param Request $request
-     * @return Application|RedirectResponse|Redirector
+     * @return Application|Redirector|RedirectResponse
      */
     public function store(Request $request)
     {
+       // dd($request->contant);
         $request->validate([
             'title'=>'required',
-            'decription'=>'required',
-            'image'=>'required|mimes:jpg,png,jpeg|max:5048'
+            'description'=>'required',
+            'categoryId'=>'required'
         ]);
-
-        $newImageName=uniqid().'-'.$request->title.'.'.$request->image->extension();
-
-        $request->image->move(storage_path('app/public/image'),$newImageName);
-
 
         Posts::create([
             'title'=>$request->input('title'),
-            'decription'=>$request->input('decription'),
+            'description'=>$request->input('description'),
             'slug'=>SlugService::createSlug(Posts::class,'slug',$request->title),
-            'image_path'=>$newImageName,
-            'user_id'=>auth()->user()->id
+            //'image_path'=>$newImageName,
+            'categoryId'=>$request->categoryId,
+            'userId'=>auth()->user()->id
         ]);
 
-        return redirect('/blog')->with('message','Your post has been updated');
+        return redirect('/admin/posts')->with('message','Your post has been added');
     }
 
     /**
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return Response
+     * @return Application|Factory|View
      */
     public function show($id)
     {
-        //
+
+        return view('blog.show')->with('post',Posts::where('id',$id)->first());
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
-     * @return Response
+     * @param $id
+     * @return Application|Factory|View
      */
     public function edit($id)
     {
-        //
+        $dropdown = Categories::all();
+        $editdata = Posts::where('slug',$id)->first();
+        return view('admin.posts.CreateAndUpdate')->with('post',['ep'=>$editdata,'cd'=>$dropdown,'id'=>'']);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param  int  $id
-     * @return void
+     * @param $id
+     * @return Application|Redirector|RedirectResponse
      */
     public function update(Request $request, $id)
     {
-        //
+        Posts::where('id',$id)->update([
+            'title'=>$request->input('title'),
+            'decription'=>$request->input('decription'),
+            'slug'=>SlugService::createSlug(Posts::class,'slug',$request->title),
+            //'image_path'=>$newImageName,
+            'user_id'=>auth()->user()->id
+        ]);
+
+        return redirect('/blog')->with('message','Your post has been Updated');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return Response
+     * @param int $id
+     * @return Application|Redirector|RedirectResponse
      */
-    public function destroy($id)
+    public function destroy(int $id)
     {
-        //
+        $post = Posts::where('slug',$id);
+        $post->delete();
+
+        return redirect('/blog')->with('message','your post has been deleted!');
     }
+
+    public function home(){
+        $posts = Posts::orderBy('updated_at','DESC')->first();
+        return view('index')->with('posts', $posts);
+    }
+
+
+
 }

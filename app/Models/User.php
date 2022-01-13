@@ -46,4 +46,9 @@ class  User extends Authenticatable
     {
         return $this->hasMany(Posts::class);
     }
+
+    public function categories(): HasMany
+    {
+        return $this->hasMany(Categories::class);
+    }
 }
